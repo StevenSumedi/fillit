@@ -1,17 +1,84 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   h_identify.c                                       :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hahmed <hahmed@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/10/20 19:11:18 by hahmed            #+#    #+#             */
-/*   Updated: 2017/10/23 23:56:15 by ssumedi          ###   ########.fr       */
+/*   Created: 2017/10/20 14:39:34 by ssumedi           #+#    #+#             */
+/*   Updated: 2017/10/25 08:30:20 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <unistd.h>
+#include <stdio.h>
 #include "fillit.h"
-#include "libft/libft.h"
+
+void	ft_error(void)
+{
+	ft_putstr("error\n");
+	exit(0);
+}
+
+void	ft_error_usage(void)
+{
+	ft_putstr("usage: fillit [sfdsf]\n");
+	exit(0);
+}
+
+int		ft_check_valid(char *str)
+{
+	int		i;
+	int		pound;
+	int		period;
+	int		line;
+
+	i = 0;
+	pound = 0;
+	period = 0;
+	line = 0;
+	while (str[i])
+	{
+		if (str[i] == '#')
+			pound++;
+		else if (str[i] == '.')
+			period++;
+		else if (str[i] == '\n')
+			line++;
+		else
+			ft_error();
+		i++;
+	}
+	if (((pound % 4) != 0) || (pound < 4) || (period % 12) != 0)
+		ft_error();
+	return (pound / 4);
+}
+
+char	*ft_read_input(char *input)
+{
+	int		i;
+	int		fd;
+	int		make_buffer;
+	char	temp[545];
+	char	buffer[1];
+
+	i = 0;
+	make_buffer = 0;
+	fd = open(input, O_RDONLY);
+	if (fd == -1)
+		ft_error();
+	while ((make_buffer = read(fd, buffer, 1)))
+	{
+		temp[i] = buffer[0];
+		if (i > 545)
+			ft_error();
+		i++;
+	}
+	temp[i] = '\0';
+	if (close(fd) == -1)
+		ft_error();
+	return(ft_strdup(temp));
+}
 
 int		ft_isshape(char *str, int i, int a, int b, int c)
 {
@@ -20,7 +87,7 @@ int		ft_isshape(char *str, int i, int a, int b, int c)
 	return (0);
 }
 
-int		ft_identify(char *str, int i)
+int		ft_tetrimino(char *str, int i)
 {
 	if (ft_isshape(str, i, 1, 5, 6))
 		return (1);
@@ -43,7 +110,7 @@ int		ft_identify(char *str, int i)
 	if (ft_isshape(str, i, 1, 6, 7))
 		return (10);
 	if (ft_isshape(str, i, 4, 5, 9))
-	return (11);
+		return (11);
 	if (ft_isshape(str, i, 1, 4, 5))
 		return (12);
 	if (ft_isshape(str, i, 5, 6, 11))
@@ -63,23 +130,24 @@ int		ft_identify(char *str, int i)
 	return (0);
 }
 
-int		*ft_something(char *str)
+int		*ft_identify(char *str, int count)
 {
-	int	*tetriminos;
-	int	count;
-	int i;
+	int		i;
+	int		j;
+	int		*tetriminos;
 
-	tetriminos = (int *)malloc(sizeof(int) * ((ft_strlen(str) + 1) / 21));
-	count = 0;
+	tetriminos = (int*)malloc(sizeof(count + 1));
 	i = 0;
-	while (str[i])
+	j = 0;
+	count = 0;
+	while (str[i] != '\0')
 	{
 		if (str[i] == '#')
 		{
-			if (ft_identify(str, i) > 0)
+			if (ft_tetrimino(str, i) > 0)
 			{
-				*tetriminos = ft_identify(str, i);
-				tetriminos++;
+				tetriminos[j] = ft_tetrimino(str, i);
+				j++;
 				count++;
 				i = (count * 21) - 1;
 			}
@@ -88,21 +156,21 @@ int		*ft_something(char *str)
 		}
 		i++;
 	}
+	tetriminos[j] = '\0';
+	printf("%d", tetriminos[2]);
 	return (tetriminos);
-}
-
-void	ft_putnbrarray(int *nbr)
-{
-	while (*nbr)
-	{
-		ft_putnbr(*nbr);
-		nbr++;
-	}
 }
 
 int		main(int argc, char **argv)
 {
-	if (argc == 2)
-		ft_putnbrarray(ft_something(argv[1]));
+	char	*READ;
+	int		CHECK_IF_VALID;
+	int		*IDENTIFY_TETRIMINOS;
+
+	if (argc != 2)
+		ft_error_usage();
+	READ = ft_read_input(argv[1]);
+	CHECK_IF_VALID = ft_check_valid(READ);
+	IDENTIFY_TETRIMINOS = ft_identify(READ, CHECK_IF_VALID);	
 	return (0);
 }
