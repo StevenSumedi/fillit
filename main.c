@@ -6,7 +6,7 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/20 14:39:34 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/10/25 08:30:20 by ssumedi          ###   ########.fr       */
+/*   Updated: 2017/10/26 14:05:45 by hahmed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,85 +80,125 @@ char	*ft_read_input(char *input)
 	return(ft_strdup(temp));
 }
 
-int		ft_isshape(char *str, int i, int a, int b, int c)
+int		*ft_isshape(char *str, int i, int a, int b, int c)
 {
+	static int	array[3];
+
 	if (str[i + a] == '#' && str[i + b] == '#' && str[i + c] == '#')
-		return (1);
+	{
+		array[0] = a;
+		array[1] = b;
+		array[2] = c;
+		return (array);
+	}
 	return (0);
 }
 
-int		ft_tetrimino(char *str, int i)
+int		*ft_tetrimino(char *str, int i)
 {
 	if (ft_isshape(str, i, 1, 5, 6))
-		return (1);
+		return (ft_isshape(str, i, 1, 5, 6));
 	if (ft_isshape(str, i, 5, 9, 10))
-		return (2);
+		return (ft_isshape(str, i, 5, 9, 10));
 	if (ft_isshape(str, i, 5, 6, 7))
-		return (3);
+		return (ft_isshape(str, i, 5, 6, 7));
 	if (ft_isshape(str, i, 1, 5, 10))
-		return (4);
+		return (ft_isshape(str, i, 1, 5, 10));
 	if (ft_isshape(str, i, 1, 2, 7))
-		return (5);
+		return (ft_isshape(str, i, 1, 2, 7));
 	if (ft_isshape(str, i, 5, 10, 11))
-		return (6);
+		return (ft_isshape(str, i, 5, 10, 11));
 	if (ft_isshape(str, i, 1, 2, 5))
-		return (7);
+		return (ft_isshape(str, i, 5, 10, 11));
 	if (ft_isshape(str, i, 1, 6, 11))
-		return (8);
+		return (ft_isshape(str, i, 1, 6, 11));
 	if (ft_isshape(str, i, 3, 4, 5))
-		return (9);
+		return (ft_isshape(str, i, 3, 4, 5));
 	if (ft_isshape(str, i, 1, 6, 7))
-		return (10);
+		return (ft_isshape(str, i, 1, 6, 7));
 	if (ft_isshape(str, i, 4, 5, 9))
-		return (11);
+		return (ft_isshape(str, i, 4, 5, 9));
 	if (ft_isshape(str, i, 1, 4, 5))
-		return (12);
+		return (ft_isshape(str, i, 1, 4, 5));
 	if (ft_isshape(str, i, 5, 6, 11))
-		return (13);
+		return (ft_isshape(str, i, 5, 6, 11));
 	if (ft_isshape(str, i, 1, 2, 3))
-		return (14);
+		return (ft_isshape(str, i, 1, 2, 3));
 	if (ft_isshape(str, i, 5, 10, 15))
-		return (15);
+		return (ft_isshape(str, i, 5, 10, 15));
 	if (ft_isshape(str, i, 4, 5, 6))
-		return (16);
+		return (ft_isshape(str, i, 4, 5, 6));
 	if (ft_isshape(str, i, 5, 6, 10))
-		return (17);
+		return (ft_isshape(str, i, 5, 6, 10));
 	if (ft_isshape(str, i, 1, 2, 6))
-		return (18);
+		return (ft_isshape(str, i, 1, 2, 6));
 	if (ft_isshape(str, i, 4, 5, 10))
-		return (19);
+		return (ft_isshape(str, i, 4, 5, 10));
 	return (0);
 }
 
-int		*ft_identify(char *str, int count)
+int		**ft_identify(char *str, int count)
 {
 	int		i;
 	int		j;
-	int		*tetriminos;
+	int		**tetriminos;
 
-	tetriminos = (int*)malloc(sizeof(count + 1));
+	tetriminos = (int**)malloc(sizeof(int*) * count);
 	i = 0;
 	j = 0;
-	count = 0;
 	while (str[i] != '\0')
 	{
 		if (str[i] == '#')
 		{
-			if (ft_tetrimino(str, i) > 0)
+			if (ft_tetrimino(str, i) != 0)
 			{
 				tetriminos[j] = ft_tetrimino(str, i);
 				j++;
-				count++;
-				i = (count * 21) - 1;
+				i = (j * 21) - 1;
 			}
 			else
 				return (0);
 		}
 		i++;
 	}
-	tetriminos[j] = '\0';
-	printf("%d", tetriminos[2]);
+	i = 0;
+	j = 0;
+	while (i < 3)
+	{
+		while (j < 3)
+		{
+			printf("%d\n", tetriminos[i][j]);
+			j++;
+		}
+		j = 0;
+		i++;
+	}	
 	return (tetriminos);
+}
+
+char	*ft_grid(int size)
+{
+	int		i;
+	int		j;
+	char	*output;
+
+	i = 0;
+	j = 0;
+	output = (char*)malloc(sizeof(char) * ((size * (size + 1)) + 1));
+	while ((i < ((size * (size + 1)))))
+	{
+		while (j < size)
+		{
+			output[i] = '.';
+			i++;
+			j++;
+		}
+		output[i] = '\n';
+		j = 0;
+		i++;
+	}
+	output[i] = '\0';
+	return (output);
 }
 
 int		main(int argc, char **argv)
@@ -171,6 +211,6 @@ int		main(int argc, char **argv)
 		ft_error_usage();
 	READ = ft_read_input(argv[1]);
 	CHECK_IF_VALID = ft_check_valid(READ);
-	IDENTIFY_TETRIMINOS = ft_identify(READ, CHECK_IF_VALID);	
+	IDENTIFY_TETRIMINOS = *ft_identify(READ, CHECK_IF_VALID);
 	return (0);
 }
