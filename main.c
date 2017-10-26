@@ -6,7 +6,7 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/20 14:39:34 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/10/26 14:05:45 by hahmed           ###   ########.fr       */
+/*   Updated: 2017/10/26 14:58:38 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,11 +141,13 @@ int		**ft_identify(char *str, int count)
 {
 	int		i;
 	int		j;
+	int		k;
 	int		**tetriminos;
 
 	tetriminos = (int**)malloc(sizeof(int*) * count);
 	i = 0;
 	j = 0;
+	k = 0;
 	while (str[i] != '\0')
 	{
 		if (str[i] == '#')
@@ -153,6 +155,12 @@ int		**ft_identify(char *str, int count)
 			if (ft_tetrimino(str, i) != 0)
 			{
 				tetriminos[j] = ft_tetrimino(str, i);
+				while (k < 3)
+				{
+					printf("%d\n", tetriminos[j][k]);
+					k++;
+				}
+				k = 0;
 				j++;
 				i = (j * 21) - 1;
 			}
@@ -161,20 +169,10 @@ int		**ft_identify(char *str, int count)
 		}
 		i++;
 	}
-	i = 0;
-	j = 0;
-	while (i < 3)
-	{
-		while (j < 3)
-		{
-			printf("%d\n", tetriminos[i][j]);
-			j++;
-		}
-		j = 0;
-		i++;
-	}	
 	return (tetriminos);
 }
+
+/*	GRID	*/
 
 char	*ft_grid(int size)
 {
