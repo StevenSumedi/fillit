@@ -6,13 +6,15 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/20 14:39:34 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/10/26 14:58:38 by ssumedi          ###   ########.fr       */
+/*   Updated: 2017/10/27 17:36:19 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <stdio.h>
 #include "fillit.h"
+
+/*		ERROR		*/
 
 void	ft_error(void)
 {
@@ -54,6 +56,8 @@ int		ft_check_valid(char *str)
 	return (pound / 4);
 }
 
+/*		READ		*/
+
 char	*ft_read_input(char *input)
 {
 	int		i;
@@ -80,10 +84,13 @@ char	*ft_read_input(char *input)
 	return(ft_strdup(temp));
 }
 
+/*		IDENTIFY TETRIMINOS		*/
+
 int		*ft_isshape(char *str, int i, int a, int b, int c)
 {
-	static int	array[3];
+	int		*array;
 
+	array = (int*)malloc(sizeof(int) * 3);
 	if (str[i + a] == '#' && str[i + b] == '#' && str[i + c] == '#')
 	{
 		array[0] = a;
@@ -91,6 +98,8 @@ int		*ft_isshape(char *str, int i, int a, int b, int c)
 		array[2] = c;
 		return (array);
 	}
+	else
+		free(array);
 	return (0);
 }
 
@@ -140,29 +149,23 @@ int		*ft_tetrimino(char *str, int i)
 int		**ft_identify(char *str, int count)
 {
 	int		i;
-	int		j;
-	int		k;
+	int		x;
+	int		y;
 	int		**tetriminos;
 
-	tetriminos = (int**)malloc(sizeof(int*) * count);
+	tetriminos = (int**)malloc(sizeof(int) * 3 * count);
 	i = 0;
-	j = 0;
-	k = 0;
+	x = 0;
+	y = 0;
 	while (str[i] != '\0')
 	{
 		if (str[i] == '#')
 		{
 			if (ft_tetrimino(str, i) != 0)
 			{
-				tetriminos[j] = ft_tetrimino(str, i);
-				while (k < 3)
-				{
-					printf("%d\n", tetriminos[j][k]);
-					k++;
-				}
-				k = 0;
-				j++;
-				i = (j * 21) - 1;
+				tetriminos[x] = ft_tetrimino(str, i);
+				x++;
+				i = (x * 21) - 1;
 			}
 			else
 				return (0);
@@ -199,16 +202,48 @@ char	*ft_grid(int size)
 	return (output);
 }
 
+char	*ft_isavailable(char *str, int a, int b, int c, int count)
+{
+	int		i;
+	char	letter;
+
+	i = 0;
+	letter = 'A' + count;
+	while (str[i])
+	{
+		if (str[i] == '.' && str[i + a] == '.' && str[i + b] == '.' && str[i + c] == '.')
+		{
+			str[i] = letter;
+			str[i + a] = letter;
+			str[i + b] = letter;
+			str[i + c] = letter;
+			return (str);
+		}
+		i++;
+	}
+	return (0);
+}
+
+char	*ft_solve(int **str, char *ptr)
+{	
+	ptr = ft_isavailable(ptr, str[0][0], str[0][1], str[0][2], 0);
+	ptr = ft_isavailable(ptr, str[1][0], str[1][1], str[1][2], 1);
+	return (ptr);
+}
+
 int		main(int argc, char **argv)
 {
 	char	*READ;
 	int		CHECK_IF_VALID;
-	int		*IDENTIFY_TETRIMINOS;
+	int		**IDENTIFY_TETRIMINOS;
+	char	*SOLVE;
 
 	if (argc != 2)
 		ft_error_usage();
 	READ = ft_read_input(argv[1]);
 	CHECK_IF_VALID = ft_check_valid(READ);
-	IDENTIFY_TETRIMINOS = *ft_identify(READ, CHECK_IF_VALID);
+	IDENTIFY_TETRIMINOS = ft_identify(READ, CHECK_IF_VALID);
+	SOLVE = ft_solve(IDENTIFY_TETRIMINOS, ft_grid(4));
+	ft_putstr(SOLVE);
 	return (0);
 }
