@@ -6,7 +6,7 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/20 14:39:34 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/10/27 17:36:19 by ssumedi          ###   ########.fr       */
+/*   Updated: 2017/10/28 02:56:37 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,10 +224,23 @@ char	*ft_isavailable(char *str, int a, int b, int c, int count)
 	return (0);
 }
 
-char	*ft_solve(int **str, char *ptr)
-{	
-	ptr = ft_isavailable(ptr, str[0][0], str[0][1], str[0][2], 0);
-	ptr = ft_isavailable(ptr, str[1][0], str[1][1], str[1][2], 1);
+char	*ft_solve(int **str, int count)
+{
+	int		x;
+	int		size;
+	char	*ptr;
+	
+	x = 0;
+	while (x < count)
+	{	
+		size = 4;
+		ptr = (char*)malloc(sizeof(char) * ((size * (size + 1)) + 1));
+		ptr = ft_grid(size);
+		while (x < count && ptr == ft_isavailable(ptr, str[x][0], str[x][1], str[x][2], x))
+		{
+			x++;
+		}
+	}
 	return (ptr);
 }
 
@@ -243,7 +256,7 @@ int		main(int argc, char **argv)
 	READ = ft_read_input(argv[1]);
 	CHECK_IF_VALID = ft_check_valid(READ);
 	IDENTIFY_TETRIMINOS = ft_identify(READ, CHECK_IF_VALID);
-	SOLVE = ft_solve(IDENTIFY_TETRIMINOS, ft_grid(4));
+	SOLVE = ft_solve(IDENTIFY_TETRIMINOS, CHECK_IF_VALID);
 	ft_putstr(SOLVE);
 	return (0);
 }
