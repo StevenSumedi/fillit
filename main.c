@@ -6,7 +6,7 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/20 14:39:34 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/10/29 18:59:05 by hahmed           ###   ########.fr       */
+/*   Updated: 2017/10/29 21:40:17 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,26 +220,30 @@ char	*ft_isavailable(char *str, int i, int *array, int count)
 	return (0);
 }
 
+int		ft_check(char *str, int i, int *array)
+{
+	if (str[i] == '.' && str[i + array[0]] == '.' && str[i + array[1]] == '.' && str[i + array[2]] == '.')
+	{
+		return (1);
+	}
+	return (0);	
+}
+
 char	*ft_remove(char *str, int i, int *array)
 {
-	int	x;
-
-	x = 0;
 	str[i] = '.';
-	while (array[x])
-	{
-		str[i + array[x]] = '.';
-		x++;
-	}
+	str[i + array[0]] = '.';
+	str[i + array[1]] = '.';
+	str[i + array[2]] = '.';
 	return (str);
 }
 
 int		ft_solve(int **str, int x, int count, int size, char *ptr)
 {
 	unsigned long		i;
-	int		print;
+	int					print;
 	
-	if (x > count - 1)
+	if (x == count)
 	{
 		ft_putstr(ptr);
 		return (1);
@@ -248,17 +252,16 @@ int		ft_solve(int **str, int x, int count, int size, char *ptr)
 	while (++i < (unsigned long)ft_strlen(ptr))
 	{
 		print = 0;
-		if (ft_isavailable(ptr, i, str[x], x))
+		if (ft_check(ptr, i, str[x]))
 		{
 			print = 1;
 			ptr = ft_isavailable(ptr, i, str[x], x);
+			ft_putstr(ptr);
+			ft_putchar('\n');
 			if (ft_solve(str, x + 1, count, size, ptr))
 				return (1);
 		}
-		if (print)
-		{
-			ptr = ft_remove(ptr, i, str[x]);
-		}
+		ptr = (print) ? ft_remove(ptr, i, str[x]) : ptr;
 	}
 	if (i == 0)
 		return (ft_solve(str, 0, count, size + 1, ft_grid(size + 1)));
@@ -271,6 +274,7 @@ int		main(int argc, char **argv)
 	int		CHECK_IF_VALID;
 	int		**IDENTIFY_TETRIMINOS;
 	char	*ptr;
+	int		SOLVE;
 
 	ptr = ft_grid(4);
 	if (argc != 2)
@@ -278,6 +282,6 @@ int		main(int argc, char **argv)
 	READ = ft_read_input(argv[1]);
 	CHECK_IF_VALID = ft_check_valid(READ);
 	IDENTIFY_TETRIMINOS = ft_identify(READ, CHECK_IF_VALID);
-	ft_solve(IDENTIFY_TETRIMINOS, 0, CHECK_IF_VALID, 4, ptr);
+	SOLVE = ft_solve(IDENTIFY_TETRIMINOS, 0, CHECK_IF_VALID, 4, ptr);
 	return (0);
 }
