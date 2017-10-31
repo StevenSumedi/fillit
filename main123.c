@@ -6,7 +6,7 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/20 14:39:34 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/10/30 16:07:14 by ssumedi          ###   ########.fr       */
+/*   Updated: 2017/10/30 17:45:06 by hahmed           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -261,6 +261,26 @@ char	*ft_remove(char *str, int i, int *array)
 	return (str);
 }
 
+int		**ft_modify(int **array, int size)
+{
+	int	x;
+	int	y;
+
+	x = 0;
+	y = 0;
+	while (array[x])
+	{
+		while (array[x][y])
+		{
+			array[x][y] += (array[x][y] / (size + 1));
+			y++;
+		}
+		x++;
+	}
+	return (array);
+}
+
+
 int		ft_solve(int **str, int x, int size, char *ptr)
 {
 	unsigned long		i;
@@ -270,7 +290,9 @@ int		ft_solve(int **str, int x, int size, char *ptr)
 	count = 0;	
 	while (str[count])
 		count++;
-	if (x == count)
+	//ft_putnbr(count);
+	//ft_putchar('\n');
+	if (x > count - 1)
 	{
 		ft_putstr(ptr);
 		return (1);
@@ -290,8 +312,11 @@ int		ft_solve(int **str, int x, int size, char *ptr)
 		}
 		ptr = (print) ? ft_remove(ptr, i, str[x]) : ptr;
 	}
-	if (i == 0)
-		return (ft_solve(str, 0, (size + 1), ft_grid(size + 1)));
+	if (x == 0)
+	{
+		//ft_putstr("check\n");
+		return (ft_solve(ft_modify(str, size + 1), 0, (size + 1), ft_grid(size + 1)));
+	}
 	return (0);
 }
 
