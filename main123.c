@@ -6,7 +6,7 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/20 14:39:34 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/10/30 17:45:06 by hahmed           ###   ########.fr       */
+/*   Updated: 2017/10/30 21:00:20 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,59 +264,68 @@ char	*ft_remove(char *str, int i, int *array)
 int		**ft_modify(int **array, int size)
 {
 	int	x;
-	int	y;
+	int	n;
 
 	x = 0;
-	y = 0;
+	n = 0;
 	while (array[x])
 	{
-		while (array[x][y])
+		if (array[x][0] == (size - 2) && array[x][1] == (size - 1) && array[x][2] == (size))
 		{
-			array[x][y] += (array[x][y] / (size + 1));
-			y++;
+			array[x][0] += 1;
+			array[x][1] += 1;
+			array[x][2] += 1;
+			x++;
 		}
+		if (array[x][0] == (size - 1) || array[x][1] == (size - 1) || array[x][2] == (size - 1))
+			n = 1;
+		if (array[x][0] == size && array[x][1] == ((size * 2) - 1) && array[x][2] == (size * 2))
+			n = 1;
+		array[x][0] += (array[x][0] / (size - n));
+		array[x][1] += (array[x][1] / (size - n));
+		array[x][2] += (array[x][2] / (size - n));
+		//ft_putnbr(array[x][0]);
+		//ft_putnbr(array[x][1]);
+		//ft_putnbr(array[x][2]);
+		//ft_putchar('\n');
 		x++;
 	}
 	return (array);
 }
 
-
 int		ft_solve(int **str, int x, int size, char *ptr)
 {
-	unsigned long		i;
+	unsigned int		i;
 	int					print;
 	int					count;
 
 	count = 0;	
 	while (str[count])
 		count++;
-	//ft_putnbr(count);
-	//ft_putchar('\n');
 	if (x > count - 1)
 	{
 		ft_putstr(ptr);
 		return (1);
 	}
 	i = -1;	
-	while (++i < (unsigned long)ft_strlen(ptr))
+	while (++i < (unsigned int)ft_strlen(ptr))
 	{
 		print = 0;
 		if (ft_check(ptr, i, str[x]))
 		{
 			print = 1;
 			ptr = ft_isavailable(ptr, i, str[x], x);
-			ft_putstr(ptr);
-			ft_putchar('\n');
+			//ft_putnbr((int)i);
+			//ft_putchar('\n');
+			//ft_putstr(ptr);
+			//ft_putchar('\n');
 			if (ft_solve(str, x + 1, size, ptr))
 				return (1);
 		}
 		ptr = (print) ? ft_remove(ptr, i, str[x]) : ptr;
 	}
 	if (x == 0)
-	{
-		//ft_putstr("check\n");
 		return (ft_solve(ft_modify(str, size + 1), 0, (size + 1), ft_grid(size + 1)));
-	}
 	return (0);
 }
 
