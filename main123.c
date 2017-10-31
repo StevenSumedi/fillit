@@ -6,7 +6,7 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/20 14:39:34 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/10/30 21:00:20 by ssumedi          ###   ########.fr       */
+/*   Updated: 2017/10/31 15:13:17 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -284,10 +284,6 @@ int		**ft_modify(int **array, int size)
 		array[x][0] += (array[x][0] / (size - n));
 		array[x][1] += (array[x][1] / (size - n));
 		array[x][2] += (array[x][2] / (size - n));
-		//ft_putnbr(array[x][0]);
-		//ft_putnbr(array[x][1]);
-		//ft_putnbr(array[x][2]);
-		//ft_putchar('\n');
 		x++;
 	}
 	return (array);
@@ -315,10 +311,6 @@ int		ft_solve(int **str, int x, int size, char *ptr)
 		{
 			print = 1;
 			ptr = ft_isavailable(ptr, i, str[x], x);
-			//ft_putnbr((int)i);
-			//ft_putchar('\n');
-			//ft_putstr(ptr);
-			//ft_putchar('\n');
 			if (ft_solve(str, x + 1, size, ptr))
 				return (1);
 		}
