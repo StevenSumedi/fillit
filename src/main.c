@@ -1,31 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main123.c                                          :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/20 14:39:34 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/10/31 15:13:17 by ssumedi          ###   ########.fr       */
+/*   Updated: 2017/10/31 19:29:47 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft/libft.h"
 #include <unistd.h>
 #include <stdio.h>
-#include "fillit.h"
-
-/*		ERROR		*/
+#include "../include/fillit.h"
 
 void	ft_error(void)
 {
 	ft_putstr("error\n");
-	exit(0);
+	exit(-1);
 }
 
 void	ft_error_usage(void)
 {
-	ft_putstr("usage: fillit [sfdsf]\n");
-	exit(0);
+	ft_putstr("usage: fillit file\n");
+	exit(-1);
 }
 
 int		ft_check_valid(char *str)
@@ -56,42 +55,27 @@ int		ft_check_valid(char *str)
 	return (pound / 4);
 }
 
-/*		READ		*/
-
 char	*ft_read_input(char *input)
 {
-	int		i;
 	int		fd;
-	int		make_buffer;
-	char	temp[545];
-	char	buffer[1];
+	int		ret;
+	char	buf[545];
+	char	*str;
 
-	i = 0;
-	make_buffer = 0;
 	fd = open(input, O_RDONLY);
 	if (fd == -1)
 		ft_error();
-	while ((make_buffer = read(fd, buffer, 1)))
-	{
-		temp[i] = buffer[0];
-		if (i > 545)
-			ft_error();
-		i++;
-	}
-	temp[i] = '\0';
+	while ((ret = read(fd, buf, sizeof(buf))))
+		str = ft_strdup(buf);
 	if (close(fd) == -1)
 		ft_error();
-	return(ft_strdup(temp));
+	return (str);
 }
-
-/*		IDENTIFY TETRIMINOS		*/
 
 int		ft_isshape(int *array, int a, int b, int c)
 {
 	if (array[0] == a && array[1] == b && array[2] == c)
-	{
 		return (1);
-	}
 	return (0);
 }
 
@@ -121,7 +105,7 @@ int		ft_tetrimino_check(int *array)
 }
 
 int		ft_tetrimino_check_two(int *array)
-{	
+{
 	if (ft_isshape(array, 4, 5, 9))
 		return (ft_isshape(array, 4, 5, 9));
 	if (ft_isshape(array, 1, 4, 5))
@@ -146,11 +130,11 @@ int		ft_tetrimino_check_two(int *array)
 int		*ft_tetrimino(char *str, int i)
 {
 	int		*array;
-	int		j;
+	int		x;
 	int		temp;
 	int		count;
 
-	j = 0;
+	x = 0;
 	temp = i;
 	count = 0;
 	array = (int*)malloc(sizeof(int) * 3);
@@ -158,13 +142,14 @@ int		*ft_tetrimino(char *str, int i)
 	{
 		if (str[temp] == '#')
 		{
-			array[j] = temp - i;
-			j++;
+			array[x] = temp - i;
+			x++;
 			count++;
 		}
 	}
 	if (ft_tetrimino_check(array) || ft_tetrimino_check_two(array))
 		return (array);
+	free(array);
 	ft_error();
 	return (0);
 }
@@ -182,21 +167,26 @@ int		**ft_identify(char *str, int count)
 	{
 		if (str[i] == '#')
 		{
-			if (ft_tetrimino(str, i) != 0)
+			if ((tetriminos[x] = ft_tetrimino(str, i)) != 0)
 			{
-				tetriminos[x] = ft_tetrimino(str, i);
 				x++;
 				i = (x * 21) - 1;
 			}
 			else
+			{
+				x = 0;
+				while (tetriminos[x])
+				{
+					free(tetriminos[x]);
+					x++;
+				}
 				return (0);
+			}
 		}
 		i++;
 	}
 	return (tetriminos);
 }
-
-/*	GRID	*/
 
 char	*ft_grid(int size)
 {
@@ -207,7 +197,7 @@ char	*ft_grid(int size)
 	i = 0;
 	j = 0;
 	output = (char*)malloc(sizeof(char) * ((size * (size + 1)) + 1));
-	while ((i < ((size * (size + 1)))))
+	while (i < (size * (size + 1)))
 	{
 		while (j < size)
 		{
@@ -223,19 +213,24 @@ char	*ft_grid(int size)
 	return (output);
 }
 
-char	*ft_isavailable(char *str, int i, int *array, int count)
+int		ft_isavailable(char *str, int i, int *array)
 {
-	char	letter;
+	if (str[i] == '.' && str[i + array[0]] == '.' &&
+			str[i + array[1]] == '.' && str[i + array[2]] == '.')
+		return (1);
+	return (0);
+}
 
-	letter = 'A' + count;
+char	*ft_print(char *str, int i, int *array, int count)
+{
 	while (str[i])
 	{
-		if (str[i] == '.' && str[i + array[0]] == '.' && str[i + array[1]] == '.' && str[i + array[2]] == '.')
+		if (ft_isavailable(str, i, array))
 		{
-			str[i] = letter;
-			str[i + array[0]] = letter;
-			str[i + array[1]] = letter;
-			str[i + array[2]] = letter;
+			str[i] = 'A' + count;
+			str[i + array[0]] = 'A' + count;
+			str[i + array[1]] = 'A' + count;
+			str[i + array[2]] = 'A' + count;
 			return (str);
 		}
 		i++;
@@ -243,16 +238,7 @@ char	*ft_isavailable(char *str, int i, int *array, int count)
 	return (0);
 }
 
-int		ft_check(char *str, int i, int *array)
-{
-	if (str[i] == '.' && str[i + array[0]] == '.' && str[i + array[1]] == '.' && str[i + array[2]] == '.')
-	{
-		return (1);
-	}
-	return (0);	
-}
-
-char	*ft_remove(char *str, int i, int *array)
+char	*ft_unprint(char *str, int i, int *array)
 {
 	str[i] = '.';
 	str[i + array[0]] = '.';
@@ -264,26 +250,37 @@ char	*ft_remove(char *str, int i, int *array)
 int		**ft_modify(int **array, int size)
 {
 	int	x;
-	int	n;
 
 	x = 0;
-	n = 0;
 	while (array[x])
 	{
-		if (array[x][0] == (size - 2) && array[x][1] == (size - 1) && array[x][2] == (size))
+		if (array[x][0] == (size - 2) && array[x][1] == (size - 1) &&
+				array[x][2] == (size))
 		{
 			array[x][0] += 1;
 			array[x][1] += 1;
 			array[x][2] += 1;
-			x++;
 		}
-		if (array[x][0] == (size - 1) || array[x][1] == (size - 1) || array[x][2] == (size - 1))
-			n = 1;
-		if (array[x][0] == size && array[x][1] == ((size * 2) - 1) && array[x][2] == (size * 2))
-			n = 1;
-		array[x][0] += (array[x][0] / (size - n));
-		array[x][1] += (array[x][1] / (size - n));
-		array[x][2] += (array[x][2] / (size - n));
+		else if (array[x][0] == (size - 1) || array[x][1] == (size - 1) ||
+				array[x][2] == (size - 1))
+		{
+			array[x][0] += (array[x][0] / (size - 1));
+			array[x][1] += (array[x][1] / (size - 1));
+			array[x][2] += (array[x][2] / (size - 1));
+		}
+		else if (array[x][0] == size && array[x][1] == ((size * 2) - 1) &&
+				array[x][2] == (size * 2))
+		{
+			array[x][0] += (array[x][0] / (size - 1));
+			array[x][1] += (array[x][1] / (size - 1));
+			array[x][2] += (array[x][2] / (size - 1));
+		}
+		else
+		{
+			array[x][0] += (array[x][0] / size);
+			array[x][1] += (array[x][1] / size);
+			array[x][2] += (array[x][2] / size);
+		}
 		x++;
 	}
 	return (array);
@@ -291,50 +288,49 @@ int		**ft_modify(int **array, int size)
 
 int		ft_solve(int **str, int x, int size, char *ptr)
 {
-	unsigned int		i;
-	int					print;
-	int					count;
+	int		i;
+	int		printed;
 
-	count = 0;	
-	while (str[count])
-		count++;
-	if (x > count - 1)
+	if (!str[x])
 	{
 		ft_putstr(ptr);
 		return (1);
 	}
-	i = -1;	
-	while (++i < (unsigned int)ft_strlen(ptr))
+	i = -1;
+	while (++i < (int)ft_strlen(ptr))
 	{
-		print = 0;
-		if (ft_check(ptr, i, str[x]))
+		printed = 0;
+		if (ft_isavailable(ptr, i, str[x]))
 		{
-			print = 1;
-			ptr = ft_isavailable(ptr, i, str[x], x);
+			ptr = ft_print(ptr, i, str[x], x);
+			printed = 1;
 			if (ft_solve(str, x + 1, size, ptr))
 				return (1);
 		}
-		ptr = (print) ? ft_remove(ptr, i, str[x]) : ptr;
+		if (printed)
+			ptr = ft_unprint(ptr, i, str[x]);
 	}
 	if (x == 0)
-		return (ft_solve(ft_modify(str, size + 1), 0, (size + 1), ft_grid(size + 1)));
+	{
+		free(ptr);
+		return (ft_solve(ft_modify(str, size + 1), 0,
+					(size + 1), ft_grid(size + 1)));
+	}
 	return (0);
 }
 
 int		main(int argc, char **argv)
 {
-	char	*READ;
-	int		CHECK_IF_VALID;
-	int		**IDENTIFY_TETRIMINOS;
-	char	*ptr;
-	int		SOLVE;
+	char	*read;
+	int		check_if_valid;
+	int		**identify_tetriminos;
+	int		solve;
 
-	ptr = ft_grid(4);
 	if (argc != 2)
 		ft_error_usage();
-	READ = ft_read_input(argv[1]);
-	CHECK_IF_VALID = ft_check_valid(READ);
-	IDENTIFY_TETRIMINOS = ft_identify(READ, CHECK_IF_VALID);
-	SOLVE = ft_solve(IDENTIFY_TETRIMINOS, 0, 4, ptr);
+	read = ft_read_input(argv[1]);
+	check_if_valid = ft_check_valid(read);
+	identify_tetriminos = ft_identify(read, check_if_valid);
+	solve = ft_solve(identify_tetriminos, 0, 4, ft_grid(4));
 	return (0);
 }
