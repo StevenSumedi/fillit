@@ -6,7 +6,7 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/20 14:39:34 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/11/01 18:02:19 by ssumedi          ###   ########.fr       */
+/*   Updated: 2017/11/02 01:39:13 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,7 @@ int		**ft_identify(char *str, int count)
 
 	i = -1;
 	x = 0;
-	tetriminos = (int**)malloc(sizeof(int) * 3 * count);
+	tetriminos = (int**)malloc(sizeof(int) * 3 * count);	
 	while (str[++i] != '\0')
 	{
 		if (str[i] == '#')
@@ -192,7 +192,7 @@ char	*ft_grd(int size)
 
 	i = 0;
 	j = 0;
-	output = (char*)malloc(sizeof(char) * ((size * (size + 1)) + 1));
+	output = (char*)malloc(sizeof(char) * ((size * (size + 1)) + 1));	
 	while (i < (size * (size + 1)))
 	{
 		while (j < size)
@@ -272,15 +272,15 @@ int		**ft_mod(int **array, int size, int x)
 	return (array);
 }
 
-int		ft_slv(int **str, int x, int size, char *ptr)
+int		ft_slv(int **str, int x, int size, char *ptr, int check_if_valid)
 {
 	int		i;
 	int		printed;
 
-	if (!str[x])
+	if (str[x] == '\0')
 	{
 		ft_putstr(ptr);
-		return (1);
+		exit (1);
 	}
 	i = -1;
 	while (++i < (int)ft_strlen(ptr))
@@ -290,14 +290,14 @@ int		ft_slv(int **str, int x, int size, char *ptr)
 		{
 			ptr = ft_print(ptr, i, str[x], x);
 			printed = 1;
-			if (ft_slv(str, x + 1, size, ptr))
+			if (ft_slv(str, x + 1, size, ptr, check_if_valid))
 				return (1);
 		}
 		if (printed)
 			ptr = ft_unprint(ptr, i, str[x]);
 	}
 	if (x == 0 && (size += 1))
-		return (ft_slv(ft_mod(str, size, -1), 0, size, ft_grd(size)));
+		return (ft_slv(ft_mod(str, size, -1), 0, size, ft_grd(size), check_if_valid));
 	return (0);
 }
 
@@ -313,6 +313,6 @@ int		main(int argc, char **argv)
 	read = ft_read_input(argv[1]);
 	check_if_valid = ft_check_valid(read);
 	identify_tetriminos = ft_identify(read, check_if_valid);
-	solve = ft_slv(identify_tetriminos, 0, 4, ft_grd(4));
+	solve = ft_slv(identify_tetriminos, 0, 4, ft_grd(4), check_if_valid);
 	return (0);
 }
