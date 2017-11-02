@@ -6,7 +6,7 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/20 14:39:34 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/10/31 19:29:47 by ssumedi          ###   ########.fr       */
+/*   Updated: 2017/11/01 18:02:19 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,29 +30,30 @@ void	ft_error_usage(void)
 int		ft_check_valid(char *str)
 {
 	int		i;
-	int		pound;
-	int		period;
+	int		po;
+	int		pe;
 	int		line;
 
-	i = 0;
-	pound = 0;
-	period = 0;
+	i = -1;
+	po = 0;
+	pe = 0;
 	line = 0;
-	while (str[i])
+	while (str[++i])
 	{
 		if (str[i] == '#')
-			pound++;
+			po++;
 		else if (str[i] == '.')
-			period++;
+			pe++;
 		else if (str[i] == '\n')
 			line++;
 		else
 			ft_error();
-		i++;
+		if ((str[i] == '\n' && str[i - 1] == '\n') && (line % 5) != 0)
+			ft_error();
 	}
-	if (((pound % 4) != 0) || (pound < 4) || (period % 12) != 0)
+	if (po % 4 != 0 || po < 4 || pe % 12 != 0 || line != ((po / 4) - 1) + po)
 		ft_error();
-	return (pound / 4);
+	return (po / 4);
 }
 
 char	*ft_read_input(char *input)
@@ -68,6 +69,8 @@ char	*ft_read_input(char *input)
 	while ((ret = read(fd, buf, sizeof(buf))))
 		str = ft_strdup(buf);
 	if (close(fd) == -1)
+		ft_error();
+	if (str == '\0')
 		ft_error();
 	return (str);
 }
@@ -94,7 +97,7 @@ int		ft_tetrimino_check(int *array)
 	if (ft_isshape(array, 5, 10, 11))
 		return (ft_isshape(array, 5, 10, 11));
 	if (ft_isshape(array, 1, 2, 5))
-		return (ft_isshape(array, 5, 10, 11));
+		return (ft_isshape(array, 1, 2, 5));
 	if (ft_isshape(array, 1, 6, 11))
 		return (ft_isshape(array, 1, 6, 11));
 	if (ft_isshape(array, 3, 4, 5))
@@ -160,35 +163,28 @@ int		**ft_identify(char *str, int count)
 	int		x;
 	int		**tetriminos;
 
-	i = 0;
+	i = -1;
 	x = 0;
 	tetriminos = (int**)malloc(sizeof(int) * 3 * count);
-	while (str[i] != '\0')
+	while (str[++i] != '\0')
 	{
 		if (str[i] == '#')
 		{
-			if ((tetriminos[x] = ft_tetrimino(str, i)) != 0)
-			{
-				x++;
+			if ((tetriminos[x++] = ft_tetrimino(str, i)) != 0)
 				i = (x * 21) - 1;
-			}
 			else
 			{
 				x = 0;
-				while (tetriminos[x])
-				{
+				while (tetriminos[x++])
 					free(tetriminos[x]);
-					x++;
-				}
 				return (0);
 			}
 		}
-		i++;
 	}
 	return (tetriminos);
 }
 
-char	*ft_grid(int size)
+char	*ft_grd(int size)
 {
 	int		i;
 	int		j;
@@ -247,12 +243,9 @@ char	*ft_unprint(char *str, int i, int *array)
 	return (str);
 }
 
-int		**ft_modify(int **array, int size)
+int		**ft_mod(int **array, int size, int x)
 {
-	int	x;
-
-	x = 0;
-	while (array[x])
+	while (array[++x])
 	{
 		if (array[x][0] == (size - 2) && array[x][1] == (size - 1) &&
 				array[x][2] == (size))
@@ -261,15 +254,9 @@ int		**ft_modify(int **array, int size)
 			array[x][1] += 1;
 			array[x][2] += 1;
 		}
-		else if (array[x][0] == (size - 1) || array[x][1] == (size - 1) ||
-				array[x][2] == (size - 1))
-		{
-			array[x][0] += (array[x][0] / (size - 1));
-			array[x][1] += (array[x][1] / (size - 1));
-			array[x][2] += (array[x][2] / (size - 1));
-		}
-		else if (array[x][0] == size && array[x][1] == ((size * 2) - 1) &&
-				array[x][2] == (size * 2))
+		else if ((array[x][0] == (size - 1) || array[x][1] == (size - 1) ||
+				array[x][2] == (size - 1)) || (array[x][0] == size &&
+				array[x][1] == ((size * 2) - 1) && array[x][2] == (size * 2)))
 		{
 			array[x][0] += (array[x][0] / (size - 1));
 			array[x][1] += (array[x][1] / (size - 1));
@@ -281,12 +268,11 @@ int		**ft_modify(int **array, int size)
 			array[x][1] += (array[x][1] / size);
 			array[x][2] += (array[x][2] / size);
 		}
-		x++;
 	}
 	return (array);
 }
 
-int		ft_solve(int **str, int x, int size, char *ptr)
+int		ft_slv(int **str, int x, int size, char *ptr)
 {
 	int		i;
 	int		printed;
@@ -304,18 +290,14 @@ int		ft_solve(int **str, int x, int size, char *ptr)
 		{
 			ptr = ft_print(ptr, i, str[x], x);
 			printed = 1;
-			if (ft_solve(str, x + 1, size, ptr))
+			if (ft_slv(str, x + 1, size, ptr))
 				return (1);
 		}
 		if (printed)
 			ptr = ft_unprint(ptr, i, str[x]);
 	}
-	if (x == 0)
-	{
-		free(ptr);
-		return (ft_solve(ft_modify(str, size + 1), 0,
-					(size + 1), ft_grid(size + 1)));
-	}
+	if (x == 0 && (size += 1))
+		return (ft_slv(ft_mod(str, size, -1), 0, size, ft_grd(size)));
 	return (0);
 }
 
@@ -331,6 +313,6 @@ int		main(int argc, char **argv)
 	read = ft_read_input(argv[1]);
 	check_if_valid = ft_check_valid(read);
 	identify_tetriminos = ft_identify(read, check_if_valid);
-	solve = ft_solve(identify_tetriminos, 0, 4, ft_grid(4));
+	solve = ft_slv(identify_tetriminos, 0, 4, ft_grd(4));
 	return (0);
 }
