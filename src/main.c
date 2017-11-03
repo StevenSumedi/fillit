@@ -6,7 +6,7 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/20 14:39:34 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/11/02 01:51:08 by ssumedi          ###   ########.fr       */
+/*   Updated: 2017/11/02 17:36:06 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -276,11 +276,22 @@ int		ft_slv(int **str, int x, int size, char *ptr)
 {
 	int		i;
 	int		printed;
+	int		count;
 
-	if (str[x] == '\0')
+	count = 0;
+	while (str[count])
+		count++;
+	if (x > count - 1)
 	{
 		ft_putstr(ptr);
+		free(ptr);
+		while (count >= 0)
+		{
+			free(str[count]);
+			count--;
+		}
 		exit(1);
+		return (1);
 	}
 	i = -1;
 	while (++i < (int)ft_strlen(ptr))
