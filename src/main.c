@@ -6,7 +6,7 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/20 14:39:34 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/11/02 17:36:06 by ssumedi          ###   ########.fr       */
+/*   Updated: 2017/11/20 14:57:20 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include "../include/fillit.h"
+
 
 void	ft_error(void)
 {
@@ -68,9 +69,9 @@ char	*ft_read_input(char *input)
 		ft_error();
 	while ((ret = read(fd, buf, sizeof(buf))))
 		str = ft_strdup(buf);
-	if (close(fd) == -1)
-		ft_error();
 	if (str == '\0')
+		ft_error();
+	if (close(fd) == -1)
 		ft_error();
 	return (str);
 }
@@ -166,7 +167,7 @@ int		**ft_identify(char *str, int count)
 	i = -1;
 	x = 0;
 	tetriminos = (int**)malloc(sizeof(int) * 3 * count);
-	while (str[++i] != '\0')
+	while (str[++i])
 	{
 		if (str[i] == '#')
 		{
@@ -248,7 +249,7 @@ int		**ft_mod(int **array, int size, int x)
 	while (array[++x])
 	{
 		if (array[x][0] == (size - 2) && array[x][1] == (size - 1) &&
-				array[x][2] == (size))
+				array[x][2] == size)
 		{
 			array[x][0] += 1;
 			array[x][1] += 1;
@@ -272,43 +273,34 @@ int		**ft_mod(int **array, int size, int x)
 	return (array);
 }
 
-int		ft_slv(int **str, int x, int size, char *ptr)
+int		ft_slv(int **str, int x, int *indices, char *ptr)
 {
 	int		i;
-	int		printed;
-	int		count;
 
-	count = 0;
-	while (str[count])
-		count++;
-	if (x > count - 1)
+	if (x == indices[1])
 	{
 		ft_putstr(ptr);
-		free(ptr);
-		while (count >= 0)
-		{
-			free(str[count]);
-			count--;
-		}
-		exit(1);
-		return (1);
+		exit (1);
+	}
+	if (!str[x])
+	{
+		ft_putstr(ptr);
+		exit (1);
 	}
 	i = -1;
-	while (++i < (int)ft_strlen(ptr))
+	while (ptr[++i])
 	{
-		printed = 0;
 		if (ft_isavailable(ptr, i, str[x]))
 		{
 			ptr = ft_print(ptr, i, str[x], x);
-			printed = 1;
-			if (ft_slv(str, x + 1, size, ptr))
-				return (1);
-		}
-		if (printed)
+			ft_slv(str, x + 1, indices, ptr);
 			ptr = ft_unprint(ptr, i, str[x]);
+		}
 	}
-	if (x == 0 && (size += 1))
-		return (ft_slv(ft_mod(str, size, -1), 0, size, ft_grd(size)));
+	if (x == 0 && (indices[0] += 1))
+	{
+		return (ft_slv(ft_mod(str, indices[0], -1), 0, indices, ft_grd(indices[0])));
+	}
 	return (0);
 }
 
@@ -318,12 +310,16 @@ int		main(int argc, char **argv)
 	int		check_if_valid;
 	int		**identify_tetriminos;
 	int		solve;
+	int		*indices;
 
 	if (argc != 2)
 		ft_error_usage();
 	read = ft_read_input(argv[1]);
 	check_if_valid = ft_check_valid(read);
 	identify_tetriminos = ft_identify(read, check_if_valid);
-	solve = ft_slv(identify_tetriminos, 0, 4, ft_grd(4));
+	indices = (int*)malloc(sizeof(int) * 2);
+	indices[0] = 4;
+	indices[1] = check_if_valid;
+	solve = ft_slv(identify_tetriminos, 0, indices, ft_grd(4));
 	return (0);
 }
