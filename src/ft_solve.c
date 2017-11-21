@@ -6,11 +6,10 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/20 19:59:51 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/11/20 20:00:23 by ssumedi          ###   ########.fr       */
+/*   Updated: 2017/11/20 22:36:13 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
 #include "../include/fillit.h"
 
 int		ft_is_available(char *str, int i, int *coords)

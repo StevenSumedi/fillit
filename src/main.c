@@ -6,11 +6,10 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/20 14:39:34 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/11/20 20:00:56 by ssumedi          ###   ########.fr       */
+/*   Updated: 2017/11/20 22:36:21 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
 #include "../include/fillit.h"
 
 int		main(int argc, char **argv)

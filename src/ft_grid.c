@@ -6,11 +6,10 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/20 19:58:45 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/11/20 19:59:27 by ssumedi          ###   ########.fr       */
+/*   Updated: 2017/11/20 22:35:46 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
 #include "../include/fillit.h"
 
 char	*ft_grid(int size)

@@ -6,11 +6,10 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/20 19:54:52 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/11/20 19:54:58 by ssumedi          ###   ########.fr       */
+/*   Updated: 2017/11/20 22:35:26 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
 #include "../include/fillit.h"
 
 int		ft_check_input(char *str)

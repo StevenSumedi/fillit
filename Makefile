@@ -1,4 +1,4 @@
-# **************************************************************************** #
+#**************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
@@ -6,7 +6,7 @@
 #    By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/10/17 14:15:27 by ssumedi           #+#    #+#              #
-#    Updated: 2017/11/20 21:57:11 by hahmed           ###   ########.fr        #
+#    Updated: 2017/11/20 22:42:59 by ssumedi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,7 @@ SRC = ft_error.c		\
 	  ft_identify.c		\
 	  ft_grid.c			\
 	  ft_solve.c		\
+	  libft.c		\
 	  main.c			\
 
 OBJ = $(SRC:.c=.o)
@@ -34,29 +35,19 @@ SRC_POS = $(addprefix $(SRC_PATH),$(SRC))
 
 INC = -I include/
 
-LIBFT = src/libft/libft.a
-
 all: $(NAME)
 
-$(NAME): $(LIBFT) $(OBJ)
-		$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT)
+$(NAME): $(OBJ)
+		$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
 		
-$(OBJ): $(LIBFT)
+$(OBJ):
 		$(CC) $(CFLAGS) -c $(SRC_POS)
-
-$(LIBFT):
-		git submodule init ./src/libft/
-		git submodule update ./src/libft/
-		$(RM) ./src/libft/author
-		make -C ./src/libft/
 
 clean:
 		$(RM) $(OBJ)
-		make clean -C ./src/libft/
 
 fclean: clean
 		$(RM) $(NAME)
-		make fclean -C ./src/libft/
 
 re: fclean all
 

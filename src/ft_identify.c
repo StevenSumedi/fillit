@@ -6,11 +6,10 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/20 19:57:07 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/11/20 19:58:15 by ssumedi          ###   ########.fr       */
+/*   Updated: 2017/11/20 22:35:54 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft/libft.h"
 #include "../include/fillit.h"
 
 int		ft_compare(int *coords, int a, int b, int c)
