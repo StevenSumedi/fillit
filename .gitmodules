@@ -1,0 +1,3 @@
+[submodule "src/libft"]
+	path = src/libft
+	url = vogsphere@vgs.42.us.org:intra/2017/activities/libft/hahmed
