@@ -6,7 +6,7 @@
 #    By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/10/17 14:15:27 by ssumedi           #+#    #+#              #
-#    Updated: 2017/11/20 21:48:08 by hahmed           ###   ########.fr        #
+#    Updated: 2017/11/20 21:57:11 by hahmed           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,6 +47,7 @@ $(OBJ): $(LIBFT)
 $(LIBFT):
 		git submodule init ./src/libft/
 		git submodule update ./src/libft/
+		$(RM) ./src/libft/author
 		make -C ./src/libft/
 
 clean:
