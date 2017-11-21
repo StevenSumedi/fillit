@@ -1,37 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_error.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/10/20 14:39:34 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/11/20 20:00:56 by ssumedi          ###   ########.fr       */
+/*   Created: 2017/11/20 19:52:41 by ssumedi           #+#    #+#             */
+/*   Updated: 2017/11/20 19:53:15 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/libft.h"
 #include "../include/fillit.h"
 
-int		main(int argc, char **argv)
+void	ft_error(void)
 {
-	char	*read;
-	int		check_input;
-	int		**identify_tetriminos;
-	int		*n;
-	int		solve;
+	ft_putstr("error\n");
+	exit(-1);
+}
 
-	if (argc == 2)
-	{
-		read = ft_read_input(argv[1]);
-		check_input = ft_check_input(read);
-		identify_tetriminos = ft_identify(read, check_input);
-		n = (int*)malloc(sizeof(int) * 2);
-		n[0] = 4;
-		n[1] = check_input;
-		solve = ft_solve(identify_tetriminos, 0, n, ft_grid(4));
-	}
-	else
-		ft_usage_message();
-	return (0);
+void	ft_usage_message(void)
+{
+	ft_putstr("usage: fillit file\n");
+	exit(-1);
 }

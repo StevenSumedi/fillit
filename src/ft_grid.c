@@ -1,37 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_grid.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/10/20 14:39:34 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/11/20 20:00:56 by ssumedi          ###   ########.fr       */
+/*   Created: 2017/11/20 19:58:45 by ssumedi           #+#    #+#             */
+/*   Updated: 2017/11/20 19:59:27 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/libft.h"
 #include "../include/fillit.h"
 
-int		main(int argc, char **argv)
+char	*ft_grid(int size)
 {
-	char	*read;
-	int		check_input;
-	int		**identify_tetriminos;
-	int		*n;
-	int		solve;
+	int		i;
+	int		j;
+	char	*str;
 
-	if (argc == 2)
+	i = -1;
+	str = (char*)malloc(sizeof(char) * ((size * (size + 1)) + 1));
+	while (++i < (size * (size + 1)))
 	{
-		read = ft_read_input(argv[1]);
-		check_input = ft_check_input(read);
-		identify_tetriminos = ft_identify(read, check_input);
-		n = (int*)malloc(sizeof(int) * 2);
-		n[0] = 4;
-		n[1] = check_input;
-		solve = ft_solve(identify_tetriminos, 0, n, ft_grid(4));
+		j = -1;
+		while (++j < size)
+		{
+			str[i] = '.';
+			i++;
+		}
+		str[i] = '\n';
 	}
-	else
-		ft_usage_message();
-	return (0);
+	str[i] = '\0';
+	return (str);
 }
