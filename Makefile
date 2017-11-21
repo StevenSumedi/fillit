@@ -6,7 +6,7 @@
 #    By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/10/17 14:15:27 by ssumedi           #+#    #+#              #
-#    Updated: 2017/11/20 20:05:24 by ssumedi          ###   ########.fr        #
+#    Updated: 2017/11/20 21:39:48 by hahmed           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,6 +39,8 @@ LIBFT = src/libft/libft.a
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJ)
+		git submodule init ./src/libft/
+		git submodule update ./src/libft/
 		$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT)
 		
 $(OBJ): $(LIBFT)
