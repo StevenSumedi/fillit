@@ -6,7 +6,7 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/31 18:25:31 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/11/20 22:34:48 by ssumedi          ###   ########.fr       */
+/*   Updated: 2017/11/24 04:55:29 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,10 @@ int		**ft_identify(char *str, int count);
 char	*ft_grid(int size);
 int		ft_is_available(char *str, int i, int *coords);
 char	*ft_print(char *str, int i, int *coords, char c);
-int		**ft_scale(int **tetro, int size, int x);
+int		**ft_scale(int **tetro, int *n, int x);
 int		ft_solve(int **tetro, int x, int *n, char *str);
+int		**ft_convert(int **tetro, int size, int x, int count);
+int		ft_special(int **tetro, int count);
 void	ft_putchar(char c);
 void	ft_putstr(char const *s);
 char	*ft_strdup(const char *str);

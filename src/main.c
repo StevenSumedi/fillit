@@ -6,11 +6,26 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/20 14:39:34 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/11/20 22:36:21 by ssumedi          ###   ########.fr       */
+/*   Updated: 2017/11/24 04:55:50 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/fillit.h"
+
+int		ft_special(int **tetro, int count)
+{
+	int		x;
+
+	x = 0;
+	while (tetro[x] && x < count)
+	{
+		if ((tetro[x][0] == 1 && tetro[x][1] == 2 && tetro[x][2] == 3) ||
+				(tetro[x][0] == 5 && tetro[x][1] == 10 && tetro[x][2] == 15))
+			return (1);
+		x++;
+	}
+	return (0);
+}
 
 int		main(int argc, char **argv)
 {
@@ -26,9 +41,11 @@ int		main(int argc, char **argv)
 		check_input = ft_check_input(read);
 		identify_tetriminos = ft_identify(read, check_input);
 		n = (int*)malloc(sizeof(int) * 2);
-		n[0] = 4;
+		n[0] = 3;
 		n[1] = check_input;
-		solve = ft_solve(identify_tetriminos, 0, n, ft_grid(4));
+		if (ft_special(identify_tetriminos, check_input))
+			n[0] = 4;
+		solve = ft_solve(identify_tetriminos, 0, n, ft_grid(n[0]));
 	}
 	else
 		ft_usage_message();

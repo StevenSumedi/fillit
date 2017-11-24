@@ -6,7 +6,7 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/20 19:59:51 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/11/20 22:36:13 by ssumedi          ###   ########.fr       */
+/*   Updated: 2017/11/24 04:52:47 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,30 +29,59 @@ char	*ft_print(char *str, int i, int *coords, char c)
 	return (str);
 }
 
-int		**ft_scale(int **tetro, int size, int x)
+int		**ft_scale(int **tetro, int *n, int x)
 {
-	while (tetro[++x])
+	while (++x < n[1])
 	{
-		if (tetro[x][0] == (size - 2) && tetro[x][1] == (size - 1) &&
-				tetro[x][2] == size)
+		if (tetro[x][0] == (n[0] - 2) && tetro[x][1] == (n[0] - 1) &&
+				tetro[x][2] == n[0])
 		{
 			tetro[x][0] += 1;
 			tetro[x][1] += 1;
 			tetro[x][2] += 1;
 		}
+		else if ((tetro[x][0] == (n[0] - 1) || tetro[x][1] == (n[0] - 1) ||
+				tetro[x][2] == (n[0] - 1)) || (tetro[x][0] == n[0] &&
+				tetro[x][1] == ((n[0] * 2) - 1) && tetro[x][2] == (n[0] * 2)))
+		{
+			tetro[x][0] += (tetro[x][0] / (n[0] - 1));
+			tetro[x][1] += (tetro[x][1] / (n[0] - 1));
+			tetro[x][2] += (tetro[x][2] / (n[0] - 1));
+		}
+		else
+		{
+			tetro[x][0] += (tetro[x][0] / n[0]);
+			tetro[x][1] += (tetro[x][1] / n[0]);
+			tetro[x][2] += (tetro[x][2] / n[0]);
+		}
+	}
+	return (tetro);
+}
+
+int		**ft_convert(int **tetro, int size, int x, int count)
+{
+	while (++x < count)
+	{
+		if (tetro[x][0] == (size - 2) && tetro[x][1] == (size - 1) &&
+				tetro[x][2] == size)
+		{
+			tetro[x][0] -= 1;
+			tetro[x][1] -= 1;
+			tetro[x][2] -= 1;
+		}
 		else if ((tetro[x][0] == (size - 1) || tetro[x][1] == (size - 1) ||
 				tetro[x][2] == (size - 1)) || (tetro[x][0] == size &&
 				tetro[x][1] == ((size * 2) - 1) && tetro[x][2] == (size * 2)))
 		{
-			tetro[x][0] += (tetro[x][0] / (size - 1));
-			tetro[x][1] += (tetro[x][1] / (size - 1));
-			tetro[x][2] += (tetro[x][2] / (size - 1));
+			tetro[x][0] -= (tetro[x][0] / (size - 1));
+			tetro[x][1] -= (tetro[x][1] / (size - 1));
+			tetro[x][2] -= (tetro[x][2] / (size - 1));
 		}
 		else
 		{
-			tetro[x][0] += (tetro[x][0] / size);
-			tetro[x][1] += (tetro[x][1] / size);
-			tetro[x][2] += (tetro[x][2] / size);
+			tetro[x][0] -= (tetro[x][0] / size);
+			tetro[x][1] -= (tetro[x][1] / size);
+			tetro[x][2] -= (tetro[x][2] / size);
 		}
 	}
 	return (tetro);
@@ -67,6 +96,8 @@ int		ft_solve(int **tetro, int x, int *n, char *str)
 		ft_putstr(str);
 		exit(1);
 	}
+	if ((n[0] == 3 && x == 0))
+		tetro = ft_convert(tetro, 4, -1, n[1]);
 	i = -1;
 	while (str[++i])
 	{
@@ -80,7 +111,7 @@ int		ft_solve(int **tetro, int x, int *n, char *str)
 	if (x == 0)
 	{
 		n[0] += 1;
-		return (ft_solve(ft_scale(tetro, n[0], -1), 0, n, ft_grid(n[0])));
+		return (ft_solve(ft_scale(tetro, n, -1), 0, n, ft_grid(n[0])));
 	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 #    By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/10/17 14:15:27 by ssumedi           #+#    #+#              #
-#    Updated: 2017/11/20 22:42:59 by ssumedi          ###   ########.fr        #
+#    Updated: 2017/11/24 02:52:39 by ssumedi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -38,7 +38,7 @@ INC = -I include/
 all: $(NAME)
 
 $(NAME): $(OBJ)
-		$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
+		$(CC) $(CFLAGS) -o $(NAME) $(OBJ) -g
 		
 $(OBJ):
 		$(CC) $(CFLAGS) -c $(SRC_POS)
