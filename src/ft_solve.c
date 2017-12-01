@@ -6,7 +6,7 @@
 /*   By: ssumedi <ssumedi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/11/20 19:59:51 by ssumedi           #+#    #+#             */
-/*   Updated: 2017/11/24 04:52:47 by ssumedi          ###   ########.fr       */
+/*   Updated: 2017/11/30 17:45:23 by ssumedi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	*ft_print(char *str, int i, int *coords, char c)
 	return (str);
 }
 
-int		**ft_scale(int **tetro, int *n, int x)
+int		**ft_scale_up(int **tetro, int *n, int x)
 {
 	while (++x < n[1])
 	{
@@ -58,7 +58,7 @@ int		**ft_scale(int **tetro, int *n, int x)
 	return (tetro);
 }
 
-int		**ft_convert(int **tetro, int size, int x, int count)
+int		**ft_scale_down(int **tetro, int size, int x, int count)
 {
 	while (++x < count)
 	{
@@ -97,7 +97,7 @@ int		ft_solve(int **tetro, int x, int *n, char *str)
 		exit(1);
 	}
 	if ((n[0] == 3 && x == 0))
-		tetro = ft_convert(tetro, 4, -1, n[1]);
+		tetro = ft_scale_down(tetro, 4, -1, n[1]);
 	i = -1;
 	while (str[++i])
 	{
@@ -111,7 +111,7 @@ int		ft_solve(int **tetro, int x, int *n, char *str)
 	if (x == 0)
 	{
 		n[0] += 1;
-		return (ft_solve(ft_scale(tetro, n, -1), 0, n, ft_grid(n[0])));
+		return (ft_solve(ft_scale_up(tetro, n, -1), 0, n, ft_grid(n[0])));
 	}
 	return (0);
 }
